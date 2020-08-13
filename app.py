@@ -5,9 +5,18 @@ from covid import covid_obj
 import random
 from datetime import datetime
 
+from flask_login import LoginManager, login_required
+
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
 db = SQLAlchemy(app)
+
+login_manager = LoginManager() # Login manage for flask-login
+login_manager.init_app(app)
+
+# Set the secret key to some random bytes. Keep this really secret!
+app.secret_key = "swru9sor39isfsg"
+
 
 # User.query.all()
 # User.query.filter_by(username="James").first()
@@ -21,6 +30,11 @@ class User(db.Model):
 
     def __repr__(self):
         return '<User %r>' % self.username
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.get(user_id)
 
 
 class Course(db.Model):
@@ -133,6 +147,7 @@ def create():
 
 
 @app.route('/')
+@login_required
 def home():
     """Retrieve all courses from the database"""
 
@@ -191,6 +206,45 @@ def delete(id):
     db.session.commit()
 
     return redirect(url_for('home'))
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    # Here we use a class of some kind to represent and validate our
+    # client-side form data. For example, WTForms is a library that will
+    # handle this for us, and we use a custom LoginForm to validate.
+    form = LoginForm()
+    if form.validate_on_submit():
+        # Login and validate the user.
+        # user should be an instance of your `User` class
+        login_user(user)
+
+        flask.flash('Logged in successfully.')
+
+        next = flask.request.args.get('next')
+        # is_safe_url should check if the url is safe for redirects.
+        # See http://flask.pocoo.org/snippets/62/ for an example.
+        if not is_safe_url(next):
+            return flask.abort(400)
+
+        return flask.redirect(next or flask.url_for('index'))
+    return flask.render_template('login.html', form=form)
+
+
+@app.route("/settings")
+@login_required
+def settings():
+    pass
+
+
+@app.route("/logout")
+@login_required
+def logout():
+    logout_user()
+    return redirect(somewhere)
+
+
+
 
 
 if __name__ =="__main__":

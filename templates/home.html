@@ -4,6 +4,10 @@
 
 {% block content %}
 
+    {% if current_user.is_authenticated %}
+        Hi {{ current_user.name }}!
+    {% endif %}
+
     {% for courses in all_courses %}
     <br>
     <div class="main" style="text-align: center;">
