@@ -5,7 +5,7 @@ from covid import covid_obj
 import random
 from datetime import datetime
 
-from flask_login import LoginManager, login_required
+from flask_login import LoginManager, login_required, UserMixin
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
@@ -20,7 +20,7 @@ app.secret_key = "swru9sor39isfsg"
 
 # User.query.all()
 # User.query.filter_by(username="James").first()
-class User(db.Model):
+class User(UserMixin, db.Model):
     """Create columns to store our data"""
 
     id = db.Column(db.Integer, primary_key=True)
