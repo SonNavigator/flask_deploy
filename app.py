@@ -148,7 +148,6 @@ def create():
 
 
 @app.route('/')
-@login_required
 def home():
     """Retrieve all courses from the database"""
 
