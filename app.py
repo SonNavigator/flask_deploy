@@ -5,7 +5,8 @@ from covid import covid_obj
 import random
 from datetime import datetime
 
-from flask_login import LoginManager, login_required, UserMixin
+from flask_login import LoginManager, login_required, UserMixin, login_user, logout_user
+
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
@@ -155,6 +156,7 @@ def home():
 
     return render_template("home.html", all_courses=all_courses) 
 
+    
 
 @app.route('/post-details/<int:id>')
 def post_details(id):
